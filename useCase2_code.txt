@@ -1,0 +1,286 @@
+import java.util.List;
+
+class SearchScreen {
+
+    // Association
+    private ManageSearchClass manageSearch;
+
+    public SearchScreen(ManageSearchClass manageSearch) {
+        this.manageSearch = manageSearch;
+    }
+
+    public void display() {
+        System.out.println("Display Search Screen");
+    }
+
+    public void selectOrders() {
+        manageSearch.searchOrders();
+    }
+}
+
+// =======================================================
+
+class ManageSearchClass {
+
+    // Associations
+    private SearchScreen searchScreen;
+    private PendingOrderScreen pendingOrderScreen;
+    private DBManager dbManager;
+
+    public void init() {
+
+        this.dbManager = new DBManager();
+
+        this.searchScreen = new SearchScreen(this);
+
+        searchScreen.display();
+    }
+
+    public void searchOrders() {
+
+        Object results = dbManager.queryOrders();
+
+        pendingOrderScreen =
+                new PendingOrderScreen(this);
+
+        pendingOrderScreen.showResults(results);
+    }
+}
+
+// =======================================================
+
+class PendingOrderScreen {
+
+    // Association
+    private ManageSearchClass manageSearch;
+
+    public PendingOrderScreen(
+            ManageSearchClass manageSearch) {
+
+        this.manageSearch = manageSearch;
+    }
+
+    public void showResults(Object results) {
+
+        System.out.println(
+                "Display Pending Orders");
+    }
+
+    private void selectOrder() {
+
+        System.out.println(
+                "Order Selected");
+    }
+}
+
+// =======================================================
+
+class OrderScreen {
+
+    // Association
+    private ManageOrderClass manageOrder;
+
+    public OrderScreen(
+            ManageOrderClass manageOrder) {
+
+        this.manageOrder = manageOrder;
+    }
+
+    public void display() {
+
+        System.out.println(
+                "Display Order Screen");
+    }
+
+    public void acceptOrder() {
+
+        manageOrder.manageOrder();
+    }
+
+    public void rejectOrder() {
+
+        OrderCancellationScreen screen =
+                new OrderCancellationScreen();
+
+        screen.display();
+    }
+
+    public void updateStatus() {
+
+        System.out.println(
+                "Order status updated");
+    }
+}
+
+// =======================================================
+
+class ManageOrderClass {
+
+    // Associations
+    private OrderScreen orderScreen;
+    private DBManager dbManager;
+
+    public ManageOrderClass(
+            OrderScreen orderScreen,
+            DBManager dbManager) {
+
+        this.orderScreen = orderScreen;
+        this.dbManager = dbManager;
+    }
+
+    public void manageOrder() {
+
+        boolean available =
+                checkAvailability();
+
+        if (available) {
+
+            reduceQuantity();
+
+            validateOrder();
+
+            OrderUpdateScreen screen =
+                    new OrderUpdateScreen();
+
+            screen.confirmOrder();
+
+        } else {
+
+            NoAvailableProductScreen screen =
+                    new NoAvailableProductScreen();
+
+            screen.display();
+        }
+    }
+
+    public boolean checkAvailability() {
+
+        return dbManager.checkQuantity();
+    }
+
+    public void reduceQuantity() {
+
+        dbManager.reduceQuantity();
+    }
+
+    public void validateOrder() {
+
+        dbManager.validateOrderDetails();
+    }
+}
+
+// =======================================================
+
+class Order {
+
+    private int orderId;
+
+    private String status;
+
+    private List<String> products;
+
+    private List<Integer> quantities;
+
+    public Order(
+            int orderId,
+            String status,
+            List<String> products,
+            List<Integer> quantities) {
+
+        this.orderId = orderId;
+
+        this.status = status;
+
+        this.products = products;
+
+        this.quantities = quantities;
+    }
+
+    public void setStatus(String status) {
+
+        this.status = status;
+    }
+
+    public void getDetails() {
+
+        System.out.println(
+                "Order ID: " + orderId);
+
+        System.out.println(
+                "Status: " + status);
+    }
+}
+
+// =======================================================
+
+class OrderUpdateScreen {
+
+    public void confirmOrder() {
+
+        System.out.println(
+                "Order ready for pickup");
+    }
+}
+
+// =======================================================
+
+class OrderCancellationScreen {
+
+    public void display() {
+
+        System.out.println(
+                "Order Cancelled");
+    }
+}
+
+// =======================================================
+
+class NoAvailableProductScreen {
+
+    public void display() {
+
+        System.out.println(
+                "Not enough stock available");
+    }
+}
+
+// =======================================================
+
+class DBManager {
+
+    public Object queryOrders() {
+
+        System.out.println(
+                "Searching pending orders");
+
+        return null;
+    }
+
+    public Object queryProductDetails() {
+
+        System.out.println(
+                "Searching product details");
+
+        return null;
+    }
+
+    public boolean checkQuantity() {
+
+        System.out.println(
+                "Checking product quantity");
+
+        return true;
+    }
+
+    public void reduceQuantity() {
+
+        System.out.println(
+                "Reducing quantity from database");
+    }
+
+    public void validateOrderDetails() {
+
+        System.out.println(
+                "Validating order");
+    }
+}
